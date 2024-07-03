@@ -1,4 +1,7 @@
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -20,15 +23,26 @@ function Login() {
       signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           const user = userCredential.user;
-          toast.success("Log in Successfull");
-          setTimeout(() => {
-            navigate("/home");
-          }, 2000);
+          if (userCredential.user.emailVerified == false) {
+            toast.error("Please Verify Your Email");
+          }else{
+            toast.success("Signup succesfull")
+            setTimeout(() => {
+              navigate("/home");
+            }, 2000);
+          }
+          console.log(user);
         })
         .catch((error) => {
+          if (error.code == "auth/too-many-requests") {
+            toast.error("Your Account Is Temporary Desibale");
+          } else if (error.code == "auth/invalid-credential") {
+            toast.error("Please Enter The Current Email Address");
+          } else {
+            toast.error("Error:" + error.code);
+          }
           console.log(error.code);
-          const errorCode = error.code;
-          const errorMessage = error.message;
+          console.log(error.message);
         });
     }
   };

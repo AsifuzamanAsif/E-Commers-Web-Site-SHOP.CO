@@ -1,60 +1,50 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { CiShoppingBasket } from "react-icons/ci";
 
 function TopSelling() {
+  let [product, setProducts] = useState([]);
+  useEffect(() => {
+    axios.get("https://fakestoreapi.com/products").then((res) => {
+      setProducts(res.data);
+    });
+  }, []);
   return (
-    <section className=" container pb-14">
-      <div className=" m-28 flex justify-center font-bannerfont font-bold text-3xl">
-        <h1>TOP SELLING</h1>
-      </div>
-      <div className="flex justify-around">
-        <div className="py-14">
-          <img className=" rounded-3xl" src="SELL1.png" alt="" />
-          <p className=" pt-4 font-productfont font-bold text-sm">
-          VERTICAL STRIPED SHIRT
-          </p>
-          <div className="flex items-center text-[#FFC633]">
-            <p className=" text-black">4.5/5</p>
-          </div>
-          <h2 className="font-bold">$120</h2>
+    <section className="font-primary  text-gray-600 ">
+      <h1 className="py-14 flex justify-center font-secondary text-5xl">
+        TopSelling
+      </h1>
+      <div className="container px-5 py-20 mx-auto">
+        <div className="flex justify-center flex-wrap -m-4 5">
+          {product.slice(0, 6).map((item) => (
+            <div
+              className=" bg-slate-300 ml-5 mt-3 lg:w-1/4 md:w-1/2 p-4 w-full rounded-lg "
+              key={item.id}
+            >
+              <div>
+                <a className="block relative h-48 rounded overflow-hidden">
+                  <img
+                    alt="ecommerce"
+                    className="object-cover object-center w-full h-full block"
+                    src={item.image}
+                  />
+                </a>
+              </div>
+              <div className="mt-4">
+                <h2 className="text-gray-900 title-font text-lg font-medium">
+                  {item.title}
+                </h2>
+                <p className="mt-1">Price: {item.price} BDT</p>
+                <button
+                  onClick={() => AddToCart(popularItem)}
+                  className="flex ml-auto mt-2 text-white bg-yellow-500 border-0 py-2 px-3  rounded"
+                >
+                  Add Cart <CiShoppingBasket className="  text-2xl " />
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
-        <div className="py-14">
-          <img className=" rounded-3xl" src="sell2.png" alt="" />
-          <p className=" pt-4 font-productfont font-bold text-sm">
-          COURAGE GRAPHIC T-SHIRT
-          </p>
-          <div className="flex items-center text-[#FFC633]">
-            <p className=" text-black">3.5/5</p>
-          </div>
-          <h2 className="font-bold">
-            $240 <span>$260</span> -20%
-          </h2>
-        </div>
-        <div className="py-14">
-          <img className=" rounded-3xl" src="sell3.png" alt="" />
-          <p className=" pt-4 font-productfont font-bold text-sm">
-          LOOSE FIT BERMUDA SHORTS
-          </p>
-          <div className="flex items-center text-[#FFC633]">
-            <p className=" text-black">4.5/5</p>
-          </div>
-          <h2 className="font-bold">$180</h2>
-        </div>
-        <div className="py-14">
-          <img className=" rounded-3xl" src="sell4.png" alt="" />
-          <p className=" pt-4 font-productfont font-bold text-sm">
-          FADED SKINNY JEANS
-          </p>
-          <div className="flex items-center text-[#FFC633]">
-            <p className=" text-black">4.5/5</p>
-          </div>
-          <h2 className="font-bold">
-            {" "}
-            $130 <span>$160</span> -30%
-          </h2>
-        </div>
-      </div>
-      <div className="">
-       <h3 className=" border-2 flex justify-center"> View All</h3>
       </div>
     </section>
   );

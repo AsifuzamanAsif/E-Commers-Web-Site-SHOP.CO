@@ -2,7 +2,11 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
 function Singup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,11 +29,12 @@ function Singup() {
       createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           const user = userCredential.user;
-          toast.success("Signed up Successfull")
-          setTimeout(()=>{
-          navigate("/login")
-          },2000)
-          // Signed up
+          sendEmailVerification(auth.currentUser).then(() => {
+            toast.success("Signup succesfull,Verify your gmail account");
+            setTimeout(() => {
+              navigate("/login");
+            }, 2000);
+          });
         })
         .catch((error) => {
           if (error.code == "auth/invalid-email") {
@@ -38,8 +43,10 @@ function Singup() {
             toast.error("Password Should be at least 6 characters");
           } else if (error.code == "auth/email-already-in-use") {
             toast.error("Your Email All Ready Use");
-          }else{
-            toast.error("Error:" + error.code)
+          } else if (error.code == "auth/invalid-credential") {
+            toast.error("Please Enter The Current Email Address");
+          } else {
+            toast.error("Error:" + error.code);
           }
           console.log(error.code);
           console.log(error.message);
@@ -119,7 +126,8 @@ function Singup() {
               <button
                 onClick={handelsubmit}
                 type="submit"
-                className="signup-btn">
+                className="signup-btn"
+              >
                 Sign up
               </button>
               <Link className="signin-btn flex justify-center" to={"/Login"}>

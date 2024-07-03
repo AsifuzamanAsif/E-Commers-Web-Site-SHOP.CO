@@ -180,5 +180,11 @@ body {
       @apply scale-100;
     }
   }
+  .slick-prev{
+   background-color: #ced8e0;
+ }
+  .slick-next{
+   background-color: #ced8e0;
+ }
   
 
